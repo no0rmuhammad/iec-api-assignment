@@ -1,33 +1,19 @@
 "use client";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 function APIAxios() {
+  const [allPosts, setAllPosts] = useState([]);
+  const [selectedPost, setSelectedPost] = useState();
+
   useEffect(() => {
-    let res = axios
+    axios
       .get("https://jsonplaceholder.typicode.com/posts")
-      .then((get) => {
-        console.log(get);
-      });
+      .then((response) => {
+        setAllPosts(response.data);
+      })
   }, []);
 
-  const dataMap = [
-    {
-      id: "1",
-      name: "Ali",
-      lastname: "Hassan",
-    },
-    {
-      id: "1",
-      name: "Noor",
-      lastname: "Muhammad",
-    },
-    {
-      id: "1",
-      name: "Hamza",
-      lastname: "Ali",
-    },
-  ];
   return (
     <>
       <div
@@ -43,7 +29,7 @@ function APIAxios() {
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                Modal title
+                {selectedPost?.title}
               </h1>
               <button
                 type="button"
@@ -52,7 +38,9 @@ function APIAxios() {
                 aria-label="Close"
               ></button>
             </div>
-            <div class="modal-body">...</div>
+            <div class="modal-body">{selectedPost?.body}</div>
+            <div class="modal-body">{selectedPost?.id}</div>
+
             <div class="modal-footer">
               <button
                 type="button"
@@ -71,26 +59,28 @@ function APIAxios() {
       <table class="table table-dark table-striped-columns">
         <thead>
           <tr>
-            <th scope="col">First Name</th>
-            <th scope="col">Last Name</th>
+            <th scope="col">Title</th>
+            <th scope="col">Body</th>
             <th scope="col">Id</th>
             <th scope="col">Button</th>
           </tr>
         </thead>
         <tbody>
-          {dataMap.map((formData) => {
+          {allPosts.map((post) => {
             return (
-              <tr>
-                <td>{formData.name}</td>
-                <td>{formData.lastname}</td>
-                <td>{formData.id}</td>
+              <tr key={post.id}>
+                <td>{post.title}</td>
+                <td>{post.body}</td>
+                <td>{post.id}</td>
                 <td>
                   <button
                     type="button"
                     class="btn btn-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop"
-                    
+                    onClick={() => {
+                      setSelectedPost(post);
+                    }}
                   >
                     Click to Show
                   </button>
